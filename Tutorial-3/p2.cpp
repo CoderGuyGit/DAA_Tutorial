@@ -1,10 +1,24 @@
 #include<iostream>
 #include<vector>
+#include<algorithm>
 
 using namespace std;
 
-vector<vector<int>> convexHull(vector<vector<int>> points,int start,int end){
-    
+typedef struct{
+    int x;
+    int y;
+}point;
+
+vector<point> convexHull(vector<point> points,int start,int end){
+    int n=end-start+1;
+
+    if(n<=5){
+        for(int i=start;i<=end;i++){
+            for(int j=i+1;j<=end;j++){
+                ;
+            }
+        }
+    }
 }
 
 int main(){
@@ -13,13 +27,17 @@ int main(){
 
     cout<<"Enter count of the points:";
     cin>>n;
-    vector<vector<int>> points(n,vector<int>(2,0));
+    vector<point> points(n,{0,0});
     
     for(int i=0;i<n;i++){
-        cin>>points[i][0]>>points[i][1];
+        cin>>points[i].x>>points[i].y;
     }
 
-    vector<vector<int>> hull;
+    vector<point> hull;
+    sort(points.begin(),points.end());
     hull=convexHull(points,0,n-1);
+
+    cout<<"Convex hull:"<<endl;
+    for(int i=0;i<n;i++)cout<<"("<<hull[i].x<<","<<hull[i].y<<")"<<endl;
     return 0;
 }
