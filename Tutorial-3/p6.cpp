@@ -1,33 +1,9 @@
 #include<iostream>
 #include<vector>
+#include<algorithm>
 using namespace std;
 
 //Constraint:L,R,H are considered to be >0
-
-void merge(vector<vector<int>> &build,int start,int end){
-    int mid=(start+end)/2;
-    vector<vector<int>> temp;
-
-    int l=start,r=mid+1;
-    while(l<=mid && r<=end){
-        if(build[l][0]==build[r][0])
-            temp.push_back(build[l][1]<build[r][1]?build[l++]:build[r++]);
-        else
-            temp.push_back(build[l][0]<build[r][0]?build[l++]:build[r++]);
-    }
-    while(l<=mid)temp.push_back(build[l++]);
-    while(r<=end)temp.push_back(build[r++]);
-
-    for(int i=0;i<temp.size();i++)build[i+start]=temp[i];
-}
-
-void sortByStart(vector<vector<int>> &build,int start,int end){
-    if(start>=end)return;
-    sortByStart(build,start,(start+end)/2);
-    sortByStart(build,(start+end)/2+1,end);
-
-    merge(build,start,end);
-}
 
 vector<vector<int>> mergelines(vector<vector<int>> Left,vector<vector<int>> Right){
     vector<vector<int>> temp;
@@ -90,7 +66,7 @@ int main(){
         cin>>build[i][0]>>build[i][1]>>build[i][2];
     }
 
-    sortByStart(build,0,n-1);
+    sort(build.begin(),build.end());
 
     vector<vector<int>> ans=skyline(build,0,n-1);
     
