@@ -8,42 +8,54 @@ void swap(pair<char,int> &a,pair<char,int> &b){
     b=temp;
 }
 
-void heapify(vector<pair<char,int>> &heap,int index,int size){
+void heapify(vector<pair<char,int>> &heap,int index){
     int l=2*index+1;
     int r=2*index+2;
 
     int min=index;
-    if(l<size && heap[l].second<heap[min].second){
+    if(l<heap.size() && heap[l].second<heap[min].second){
         min=l;
     }
-    if(r<size && heap[r].second<heap[min].second){
+    if(r<heap.size() && heap[r].second<heap[min].second){
         min=r;
     }
 
     if(min!=index){
         swap(heap[min],heap[index]);
-        heapify(heap,min,size);
+        heapify(heap,min);
     }
 }
 
-void buildHeap(vector<pair<char,int>> &heap,int size){
-    for(int i=size/2-1;i>=0;i--){
-        heapify(heap,i,size);
+void buildHeap(vector<pair<char,int>> &heap){
+    for(int i=heap.size()/2-1;i>=0;i--){
+        heapify(heap,i);
     }
 }
 
-pair<char,int> extractMin(vector<pair<char,int>> &heap,int &size){
+pair<char,int> extractMin(vector<pair<char,int>> &heap){
     pair<char,int> temp=heap[0];
-    size--;
-    swap(heap[0],heap[size]);
-    heapify(heap,0,size);
+    swap(heap[0],heap[heap.size()-1]);
+    heap.pop_back();
+    if(!heap.empty()) heapify(heap,0);
+    return temp;
+}
+
+void insert_heap(vector<pair<char,int>> &heap,pair<char,int> t){
+    heap.push_back(t);
+    int i=heap.size()-1;
+
+    while(i>0){
+        int parent = (i-1)/2;
+        if(heap[parent].second<heap[i].second)break;
+        swap(heap[parent],heap[i]);
+        i=parent;
+    }
 
 }
 
 string HuffmanCode(vector<pair<char,int>> mp){
     vector<pair<char,int>> heap=mp;
-    buildHeap(heap,heap.size());
-
+    buildHeap(heap);
     for(int i=0;i<heap.size();i++){
         cout<<heap[i].second<<" ";
     }
