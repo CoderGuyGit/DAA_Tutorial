@@ -2,84 +2,73 @@
 
 using namespace std;
 
-void swap(pair<char,int> &a,pair<char,int> &b){
-    pair<char,int> temp=a;
-    a=b;
-    b=temp;
+class Node{
+    public:
+    
+    char c;
+    int freq;
+    Node* left;
+    Node* right;
+
+    Node(char ch,int f){
+        c=ch;
+        freq=f;
+        left=nullptr;
+        right=nullptr;
+    }
+};
+
+struct Compare{
+    bool operator ()(Node* a,Node* b){
+        return a->freq>b->freq;
+    }
+};
+
+int getCost(Node* head,int depth=0){
+    if(head==nullptr)return 0;
+    if(head->c != '#')return depth * (head->freq);
+    return getCost(head->left,depth+1)+getCost(head->right,depth+1);
 }
 
-void heapify(vector<pair<char,int>> &heap,int index){
-    int l=2*index+1;
-    int r=2*index+2;
+int HuffmanCost(vector<pair<char,int>> mp){
+    priority_queue<Node*,vector<Node*>,Compare> heap;
+    for(auto x:mp)heap.push(new Node(x.first,x.second));
 
-    int min=index;
-    if(l<heap.size() && heap[l].second<heap[min].second){
-        min=l;
-    }
-    if(r<heap.size() && heap[r].second<heap[min].second){
-        min=r;
-    }
 
-    if(min!=index){
-        swap(heap[min],heap[index]);
-        heapify(heap,min);
-    }
-}
+    while(heap.size()>1){
+        Node* l=heap.top();
+        heap.pop();
+        Node* r=heap.top();
+        heap.pop();
 
-void buildHeap(vector<pair<char,int>> &heap){
-    for(int i=heap.size()/2-1;i>=0;i--){
-        heapify(heap,i);
-    }
-}
-
-pair<char,int> extractMin(vector<pair<char,int>> &heap){
-    pair<char,int> temp=heap[0];
-    swap(heap[0],heap[heap.size()-1]);
-    heap.pop_back();
-    if(!heap.empty()) heapify(heap,0);
-    return temp;
-}
-
-void insert_heap(vector<pair<char,int>> &heap,pair<char,int> t){
-    heap.push_back(t);
-    int i=heap.size()-1;
-
-    while(i>0){
-        int parent = (i-1)/2;
-        if(heap[parent].second<heap[i].second)break;
-        swap(heap[parent],heap[i]);
-        i=parent;
+        Node* comb=new Node('#',l->freq+r->freq);
+        if(l->freq>r->freq)swap(l,r);
+        comb->left=l;
+        comb->right=r;
+        heap.push(comb);
     }
 
-}
-
-string HuffmanCode(vector<pair<char,int>> mp){
-    vector<pair<char,int>> heap=mp;
-    buildHeap(heap);
-    for(int i=0;i<heap.size();i++){
-        cout<<heap[i].second<<" ";
-    }
-
-    return "";
+    Node* root=heap.top();
+    return getCost(root);
 }
 
 int main(){
     vector<pair<char,int>> umap;
     char c;
     int f;
-    while(1){
+    char r='\0';
+    while(r!='n' && r!='N'){
         cout<<setw(20)<<"\nEnter the character:";
         cin>>c;
         cout<<setw(20)<<"Enter it's frequency:";
         cin>>f;
         umap.push_back({c,f});
 
-        char r;
+        
         cout<<"Continue?(y/n):";
         cin>>r;
-        if(r=='n' || r=='N')break;
     }
 
-    string hc=HuffmanCode(umap);
+    cout<<"Total cost:"<<HuffmanCost(umap)<<endl;
     return 0;
 }
