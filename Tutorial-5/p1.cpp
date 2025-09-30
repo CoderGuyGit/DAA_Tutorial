@@ -3,16 +3,47 @@
 
 using namespace std;
 
-long matrixChainMultiplyCost(int i,int j,vector<int>p){
-    if(i==j)return 0;
-    long minCost=-1;
-    long cost=0;
-    for(int k=i;k<j;k++){
-        cost=matrixChainMultiplyCost(i,k,p)+matrixChainMultiplyCost(k+1,j,p)+p[i-1]*p[k]*p[j];
-        
-        if( minCost>cost || minCost==-1)minCost=cost;
+void printPattern(vector<vector<int>> s,int i,int j){
+    if(i==j){
+        cout<<"A"<<i;
+        return;
     }
-    return minCost;
+    cout<<'(';
+    printPattern(s,i,s[i][j]);
+    cout<<" x ";
+    printPattern(s,s[i][j]+1,j);
+    cout<<')';
+}
+
+long matrixChainMultiplyCost(int i,int j,vector<int>p){
+    int n=p.size()-1;   //Number of matrices
+    vector<vector<int>> m(n+1,vector<int>(n+1,0));   //Set up boundry condition m[i,i]=0
+    vector<vector<int>> s(n+1,vector<int>(n+1,0));
+
+    //WE have taken matrix index from 1 to n
+
+    for(int i=1;i<=n;i++){
+        s[i][i]=i;
+    }
+    for(int len=2;len<=n;len++){
+        for(int i=1;i<=n-len+1;i++){
+            int j=i+len-1;
+            
+            m[i][j]=__INT_MAX__;
+            for(int r=i;r<j;r++){
+                int temp=m[i][r]+m[r+1][j]+p[i-1]*p[r]*p[j];
+                if(temp<m[i][j]){
+                    m[i][j]=temp;
+                    s[i][j]=r;
+                }
+            }
+        }
+    }
+    cout<<"Optimal pattern:";
+    printPattern(s,1,n);
+    cout<<endl;
+    return m[1][n];
+
 }
 
 int main(){
