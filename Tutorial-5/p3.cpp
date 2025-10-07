@@ -3,6 +3,7 @@ using namespace std;
 
 int main(){
     string s;
+    cout<<"Enter your string"<<endl;
     getline(cin,s);
     int n=s.length();
 
@@ -12,7 +13,7 @@ int main(){
     vector<vector<bool>> isPalindrome(n,vector<bool>(n,false));
     for(int i=0;i<n;i++)isPalindrome[i][i]=true;
     for(int i=0;i<n-1;i++)isPalindrome[i][i+1]=s[i]==s[i+1];
-
+    
     for(int len=3;len<=n;len++){
         for(int i=0;i<=n-len;i++){
             int j=i+len-1;
